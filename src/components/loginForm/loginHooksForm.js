@@ -1,48 +1,40 @@
-import {Formik, Field, Form} from 'formik';
 import {login} from "../../services/userService";
 import s from "./loginFormFormik.module.css"
 import {NavLink} from "react-router-dom";
+import {useForm} from "react-hook-form";
 
 const LoginHooksForm = () => {
+    const {register, handleSubmit} = useForm()
     const onSubmit = (formData) => {
+        console.log(formData);
         login(formData).then(response => console.log(response.data), err => alert(err))
     }
     return (<div>
-            <Formik
-                initialValues={{
-                    email: "",
-                    password: "",
-                    rememberMe: false,
-                    captcha: false
-                }}
-                onSubmit={onSubmit}
-                enableReinitialize={true}
+            <form
+                onSubmit={handleSubmit(onSubmit)}
             >
-                <Form>
-                    <div>
-                        <label htmlFor="email">Email</label>
-                        <Field
-                            id="email"
-                            name="email"
-                            placeholder="neo@mail.com"
-                            type="email"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="password">Password</label>
-                        <Field id="password" name="password" placeholder="Kaput drakonis"/>
-                    </div>
-                    <div>
-                        <label htmlFor="rememberMe">remember me</label>
-                        <Field
-                            id="rememberMe"
-                            name="rememberMe"
-                            type="checkbox"
-                        />
-                    </div>
-                    <button type="submit">Submit</button>
-                </Form>
-            </Formik>
+                <div>
+                    <label>username</label>
+                    <input
+                        {...register("email")}
+                        placeholder="neo@mail.com"
+                        type="email"
+                    />
+                </div>
+                <div>
+                    <label>Password</label>
+                    <input  {...register("password")} placeholder="Kaput drakonis"/>
+                </div>
+                <div>
+                    <label htmlFor="rememberMe">remember me</label>
+                    <input
+                        id="rememberMe"
+                        {...register("rememberMe")}
+                        type="checkbox"
+                    />
+                </div>
+                <button type="submit">Submit</button>
+            </form>
             <div>
 
                 <NavLink to="/signUpHooksForm">
