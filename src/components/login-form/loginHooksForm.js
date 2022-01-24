@@ -1,4 +1,4 @@
-import {login} from "../../services/userService";
+import {usersApi} from "../../services/userService";
 import s from "./loginFormFormik.module.css"
 import {NavLink} from "react-router-dom";
 import {useForm} from "react-hook-form";
@@ -7,23 +7,24 @@ const LoginHooksForm = () => {
     const {register, handleSubmit} = useForm()
     const onSubmit = (formData) => {
         console.log(formData);
-        login(formData).then(response => console.log(response.data), err => alert(err))
+        usersApi.usersLogin(formData).then(response => console.log(response.data), err => alert(err))
     }
     return (<div>
+            <h1>Hooks form login</h1>
             <form
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <div>
-                    <label>username</label>
+                    <label>Nickname</label>
                     <input
-                        {...register("email")}
+                        {...register("username")}
                         placeholder="neo@mail.com"
-                        type="email"
+                        type="text"
                     />
                 </div>
                 <div>
                     <label>Password</label>
-                    <input  {...register("password")} placeholder="Kaput drakonis"/>
+                    <input  {...register("password")} placeholder="Kaput drakonis" type="password"/>
                 </div>
                 <div>
                     <label htmlFor="rememberMe">remember me</label>
@@ -38,7 +39,7 @@ const LoginHooksForm = () => {
             <div>
 
                 <NavLink to="/signUpHooksForm">
-                    <button className={s.signButton}>Sign up</button>
+                    <button className={s.signButton}>Registration</button>
                 </NavLink>
             </div>
         </div>

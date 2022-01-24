@@ -1,16 +1,22 @@
 import {Formik, Field, Form} from 'formik';
-import {login} from "../../services/userService";
+import {usersApi} from "../../services/userService";
 import s from "./loginFormFormik.module.css"
-import {NavLink} from "react-router-dom";
+import {NavLink, Redirect} from "react-router-dom";
 
 const LoginFormFormik = () => {
     const onSubmit = (formData) => {
-        login(formData).then(response => console.log(response.data), err => alert(err))
+        usersApi.usersLogin(formData).then(response => {
+            if (response.data.token) {
+                 <Redirect  to={"/success"}/>
+            }
+        }, err => alert(err))
     }
+
     return (<div>
+            <h1>Formik login form</h1>
             <Formik
                 initialValues={{
-                    email: "",
+                    username: "",
                     password: "",
                     rememberMe: false,
                     captcha: false
@@ -19,17 +25,20 @@ const LoginFormFormik = () => {
             >
                 <Form>
                     <div>
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="username">Nickname</label>
                         <Field
-                            id="email"
-                            name="email"
+                            id="username"
+                            name="username"
                             placeholder="neo@mail.com"
-                            type="email"
+                            type="text"
                         />
                     </div>
                     <div>
                         <label htmlFor="password">Password</label>
-                        <Field id="password" name="password" placeholder="Kaput drakonis"/>
+                        <Field id="password"
+                               name="password"
+                               placeholder="Kaput drakonis"
+                               type="password"/>
                     </div>
                     <div>
                         <label htmlFor="rememberMe">remember me</label>
@@ -45,7 +54,7 @@ const LoginFormFormik = () => {
             <div>
 
         <NavLink to="/signUpFormik">
-            <button className={s.signButton}>Sign up</button>
+            <button className={s.signButton}>Registration</button>
         </NavLink>
             </div>
     </div>
