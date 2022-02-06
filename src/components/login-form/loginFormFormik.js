@@ -1,15 +1,23 @@
-import {Formik, Field, Form} from 'formik';
-import {usersApi} from "../../services/userService";
+import {Field, Form, Formik} from 'formik';
+import {setAuthorizationHeader, usersApi} from "../../services/userService";
 import s from "./loginFormFormik.module.css"
-import {NavLink, Redirect} from "react-router-dom";
+import {NavLink, useHistory} from "react-router-dom";
+import {setRegistrationData} from "../../store/auth-reducer";
+import {useDispatch} from "react-redux";
 
 const LoginFormFormik = () => {
-    const onSubmit = (formData) => {
-        usersApi.usersLogin(formData).then(response => {
-            if (response.data.token) {
-                 <Redirect  to={"/success"}/>
-            }
-        }, err => alert(err))
+    let dispatch = useDispatch()
+    let history = useHistory()
+
+    const onSubmit = (formData) => {                //дублирую логику
+        usersApi.usersLogin(formData)
+            .then(response=>{
+                let {id,username,token}=response.data
+                dispatch(setRegistrationData(id,username))
+                localStorage.setItem("token", token)
+                setAuthorizationHeader(token)
+                history.push("/success")
+            }, err => alert(err))
     }
 
     return (<div>
@@ -53,11 +61,11 @@ const LoginFormFormik = () => {
             </Formik>
             <div>
 
-        <NavLink to="/signUpFormik">
-            <button className={s.signButton}>Registration</button>
-        </NavLink>
+                <NavLink to="/signUpFormik">
+                    <button className={s.signButton}>Registration</button>
+                </NavLink>
             </div>
-    </div>
+        </div>
 
 
     )
